@@ -59,7 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Print.cs" />
     <Compile Include="DrugsTable.cs">
       <DependentUpon>DrugsTable.xsd</DependentUpon>
     </Compile>

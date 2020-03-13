@@ -373,10 +373,24 @@ namespace GoodsListPrint
             {
                 foreach (DataGridViewRow row in dataGridView3.Rows)
                 {
-                    //这里写插入数据库代码(略)
+                    //获取取消打印行的数据的主键
+                    string DrugsID = row.Cells[0].Value.ToString();
+                    //查询取消打印行现有库存数量
+                    string SelectSQL = string.Format("select *from DrugsTable where DrugsID={0}", DrugsID);
+                    DataTable dt = AccessDbHelper.ExecuteDataTable(SelectSQL);
+                    int stock = Convert.ToInt32(dt.Rows[0]["Stock"]);
+                    //删除打印的数量与现有库存相加
+                    stock += Convert.ToInt32(row.Cells[10].Value);
+                    //更新现有库存数据                
+                    string UpdateSQL = string.Format("UPDATE DrugsTable SET Stock='{0}' WHERE DrugsID={1}", stock, DrugsID);
+                    if (!(AccessDbHelper.ExecuteNonQuery(UpdateSQL) > 0))
+                        MessageBox.Show("更新库存失败！");
+
                     dataGridView3.Rows.Remove(row);//删除行    
                 }
             }
+            //刷新表格数据
+            btnSelectDrugs_Click(null, null);
             //清空：计算价格
             CountNum();
         }
@@ -435,7 +449,7 @@ namespace GoodsListPrint
                 ReportParameter Drawer = new ReportParameter("ReportParameterDrawer", string.Format("开票员:{0}", PrintParams["ReportParameterDrawer"]));
                 ReportParameter Phone = new ReportParameter("ReportParameterPhone", string.Format("联系电话:{0}", PrintParams["ReportParameterPhone"]));
                 ReportParameter RecAddr = new ReportParameter("ReportParameterRecAddr", string.Format("收货地址:{0}", PrintParams["ReportParameterRecAddr"]));
-                ReportParameter White = new ReportParameter("ReportParameterWhite", string.Format("收款:{0}", PrintParams["ReportParameterWhite"]));
+                ReportParameter White = new ReportParameter("ReportParameterWhite", string.Format("白联:{0}", PrintParams["ReportParameterWhite"]));
                 ReportParameter Blue = new ReportParameter("ReportParameterBlue", string.Format("蓝联:{0}", PrintParams["ReportParameterBlue"]));
                 ReportParameter Salesman = new ReportParameter("ReportParameterSalesman", string.Format("业务员:{0}", PrintParams["ReportParameterSalesman"]));
                 ReportParameter Verification = new ReportParameter("ReportParameterVerification", string.Format("复合:{0}", PrintParams["ReportParameterVerification"]));

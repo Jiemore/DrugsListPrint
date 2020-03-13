@@ -26,7 +26,7 @@ namespace GoodsListPrint
         private void PrintPreview_Load(object sender, EventArgs e)
         {
             this.reportViewer1.RefreshReport();
-            reportViewer1.LocalReport.ReportPath = @"C:\Users\R\source\repos\GoodsListPrint\PrintReport\shengxingReport.rdlc";// Environment.CurrentDirectory + @"\shengxingReport.rdlc";
+            reportViewer1.LocalReport.ReportPath = Environment.CurrentDirectory + @"\shengxingReport.rdlc";//@"C:\Users\R\source\repos\DrugsListPrint\PrintReport\shengxingReport.rdlc";
             ReportDataSource rds = new ReportDataSource
             {
                 Name = "DataTableZhCN",
