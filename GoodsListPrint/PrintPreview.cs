@@ -25,19 +25,28 @@ namespace GoodsListPrint
 
         private void PrintPreview_Load(object sender, EventArgs e)
         {
-            this.reportViewer1.RefreshReport();
-            reportViewer1.LocalReport.ReportPath = Environment.CurrentDirectory + @"\shengxingReport.rdlc";//@"C:\Users\R\source\repos\DrugsListPrint\PrintReport\shengxingReport.rdlc";
-            ReportDataSource rds = new ReportDataSource
+            try
             {
-                Name = "DataTableZhCN",
-                Value = dt
-            };
-            //参数集
-            this.reportViewer1.LocalReport.SetParameters(parameters);
-            //数据集
-            this.reportViewer1.LocalReport.DataSources.Add(rds);
-            //刷新
-            this.reportViewer1.RefreshReport();
+                this.reportViewer1.RefreshReport();
+                reportViewer1.LocalReport.ReportPath = Environment.CurrentDirectory + @"\shengxingReport.rdlc";//@"C:\Users\R\source\repos\DrugsListPrint\PrintReport\shengxingReport.rdlc";
+                ReportDataSource rds = new ReportDataSource
+                {
+                    Name = "DataTableZhCN",
+                    Value = dt
+                };
+                //参数集
+                this.reportViewer1.LocalReport.SetParameters(parameters);
+                //数据集
+                this.reportViewer1.LocalReport.DataSources.Add(rds);
+                //刷新
+                this.reportViewer1.RefreshReport();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e)

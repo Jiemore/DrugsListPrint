@@ -332,6 +332,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtCustomer);
             this.Name = "PrintSetting";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "打印参数设置";
             this.Load += new System.EventHandler(this.PrintSetting_Load);

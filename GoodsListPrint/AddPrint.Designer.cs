@@ -93,7 +93,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDown1);
+            this.MaximizeBox = false;
             this.Name = "AddPrint";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "添加打印：设定药品数量";
             this.Load += new System.EventHandler(this.AddPrint_Load);

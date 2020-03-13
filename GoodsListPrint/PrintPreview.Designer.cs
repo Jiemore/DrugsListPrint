@@ -50,6 +50,7 @@
             this.ClientSize = new System.Drawing.Size(800, 434);
             this.Controls.Add(this.reportViewer1);
             this.Name = "PrintPreview";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "打印预览";
             this.Load += new System.EventHandler(this.PrintPreview_Load);

@@ -283,6 +283,7 @@
             this.Controls.Add(this.txtDrugsName);
             this.MaximizeBox = false;
             this.Name = "AddGoodsForm";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "添加药品";
             this.ResumeLayout(false);

@@ -15,6 +15,8 @@ namespace GoodsListPrint
     {
         //传入报表的参数 部分用户自定义
         Dictionary<string, string> PrintParams = new Dictionary<string, string>();
+        //忽略提示
+        bool ignore = false;
         public MainForm()
         {
             InitializeComponent();
@@ -174,7 +176,7 @@ namespace GoodsListPrint
                 }
                 else
                 {
-                    MessageBox.Show("数据库创建失败！请添加数据[DrugsDatabase.mdb]到程序运行目录下。");
+                    MessageBox.Show("数据库创建失败，以管理员身份运行！或添加数据库[DrugsDatabase.mdb]到程序运行目录下。","警告");
                 }
             }
             else
@@ -333,37 +335,50 @@ namespace GoodsListPrint
 
         private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            //取消打印
-            if (dataGridView3.Columns[e.ColumnIndex].Name == "btnPrintDel")
+            try
             {
+                //取消打印
+                if (dataGridView3.Columns[e.ColumnIndex].Name == "btnPrintDel")
+                {
 
-                int RowIndex = Convert.ToInt32(e.RowIndex);
-                string DrugsID = dataGridView3.Rows[RowIndex].Cells[0].Value.ToString();
-                string SelectSQL = string.Format("select *from DrugsTable where DrugsID={0}", DrugsID);
-                string UpdateSQL;
-                DataTable dt = AccessDbHelper.ExecuteDataTable(SelectSQL);
+                    int RowIndex = Convert.ToInt32(e.RowIndex);
+                    string DrugsID = dataGridView3.Rows[RowIndex].Cells[0].Value.ToString();
+                    string SelectSQL = string.Format("select *from DrugsTable where DrugsID={0}", DrugsID);
+                    string UpdateSQL;
+                    DataTable dt = AccessDbHelper.ExecuteDataTable(SelectSQL);
 
-                //库存数据变更
+                    //库存数据变更
 
-                //查询现有库存数量
-                int stock = Convert.ToInt32(dt.Rows[0]["Stock"]) ;
+                    //查询现有库存数量
+                    int stock = Convert.ToInt32(dt.Rows[0]["Stock"]);
 
-                //删除打印的数量与现有库存相加
-                stock += Convert.ToInt32(dataGridView3.Rows[RowIndex].Cells[10].Value);
-                //更新现有库存数据                
-                UpdateSQL = string.Format("UPDATE DrugsTable SET Stock='{0}' WHERE DrugsID={1}", stock, DrugsID);
-                if (!(AccessDbHelper.ExecuteNonQuery(UpdateSQL) > 0))
-                    MessageBox.Show("更新库存失败！");
+                    //删除打印的数量与现有库存相加
+                    stock += Convert.ToInt32(dataGridView3.Rows[RowIndex].Cells[10].Value);
+                    //更新现有库存数据                
+                    UpdateSQL = string.Format("UPDATE DrugsTable SET Stock='{0}' WHERE DrugsID={1} ", stock, DrugsID);
+                    if (!(AccessDbHelper.ExecuteNonQuery(UpdateSQL) > 0))
+                        if (!ignore)//判断消息是否要忽略
+                        {
+                            DialogResult dialogResult = MessageBox.Show("更新库存失败,但不会影响您的打印！不再提示此类消息？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                                ignore = true;
+                        }
 
-                //删除打印区的数据
-                DataGridViewRow row = dataGridView3.Rows[RowIndex];
-                dataGridView3.Rows.Remove(row);
+                    //删除打印区的数据
+                    DataGridViewRow row = dataGridView3.Rows[RowIndex];
+                    dataGridView3.Rows.Remove(row);
 
-                //重新计算价格
-                CountNum();
-                //刷新库存
-                btnSelectDrugs_Click(null, null);
+                    //重新计算价格
+                    CountNum();
+                    //刷新库存
+                    btnSelectDrugs_Click(null, null);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message) ;
+            }
+          
 
         }
         //清除打印区
@@ -384,7 +399,12 @@ namespace GoodsListPrint
                     //更新现有库存数据                
                     string UpdateSQL = string.Format("UPDATE DrugsTable SET Stock='{0}' WHERE DrugsID={1}", stock, DrugsID);
                     if (!(AccessDbHelper.ExecuteNonQuery(UpdateSQL) > 0))
-                        MessageBox.Show("更新库存失败！");
+                        if (!ignore)//判断消息是否要忽略
+                        {
+                            DialogResult dialogResult = MessageBox.Show("更新库存失败,但不会影响您的打印！不再提示此类消息？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                                ignore = true;
+                        }
 
                     dataGridView3.Rows.Remove(row);//删除行    
                 }
